@@ -4,7 +4,6 @@ from datetime import datetime
 from io import BytesIO
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
-from openpyxl.utils import get_column_letter
 
 st.set_page_config(page_title="Intymny Quiz dla Par", page_icon="💖", layout="centered")
 
@@ -73,98 +72,99 @@ for opcja in gotowosc_opcje:
         zaznaczone_gotowosci.append(opcja)
 
 # 5. Pytania niestandardowe (własne)
-st.header("5. Twoje własne pytania")
+st.header("5. Własne pytania")
 wlasne_pytanie = st.text_input(f"{aktualna_osoba}: Masz jakieś specjalne pytanie lub prośbę, którą chcesz przekazać drugiej osobie?")
 
 st.divider()
 
-# Podsumowanie i Generowanie Zmysłowego Excela
-if st.button("Zapisz i pobierz zmysłowy arkusz Excel"):
-    st.success(f"Dziękujemy, {aktualna_osoba}! Twój arkusz został przygotowany z dbałością o detale.")
+# Podsumowanie i Generowanie Ulotki w Stylu "Dark Mode"
+if st.button("Zapisz i pobierz kartę spotkania (Dark Mode)"):
+    st.success(f"Dziękujemy, {aktualna_osoba}! Twoja karta spotkania została przygotowana.")
     
-    # Tworzenie ekskluzywnego arkusza przez openpyxl
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Intymny Check-in"
-    ws.views.sheetView[0].showGridLines = True
+    ws.title = "Karta Spotkania"
     
-    # Paleta zmysłowa: Głęboki burgund / śliwka + pudrowy róż + elegancka czcionka
-    HEADER_BG = "512E5F"       # Głęboki śliwkowo-winny odcień
-    HEADER_FG = "FFFFFF"       # Biały tekst nagłówka
-    ACCENT_BG = "FADBD8"       # Miękki pudrowy róż dla wyróżnień
-    BORDER_COLOR = "E8DAEF"    # Delikatne liliowo-różowe obramowanie
+    # Całkowite wyłączenie widoczności siatki (efekt czystej ulotki)
+    ws.views.sheetView[0].showGridLines = False
     
-    header_font = Font(name="Century Gothic", size=11, bold=True, color=HEADER_FG)
+    # Paleta Dark Mode (Głęboka czerń + grafitowe karty + różowe akcenty)
+    DARK_BG = "000000"          # Czern tła
+    CARD_BG = "1A1A1A"          # Grafit na dane
+    HEADER_BG = "2C2C2C"        # Odcień na etykiety
+    TEXT_WHITE = "FFFFFF"       # Biały tekst
+    TEXT_ACCENT = "FFD700"      # Złoto-różowy akcent na najważniejsze pola
+    BORDER_DARK = "333333"      # Ciemne, subtelne obramowanie
+    
+    title_font = Font(name="Segoe UI", size=14, bold=True, color="FF69B4")
+    header_font = Font(name="Segoe UI", size=11, bold=True, color=TEXT_WHITE)
     header_fill = PatternFill(start_color=HEADER_BG, end_color=HEADER_BG, fill_type="solid")
-    header_alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
     
-    data_font = Font(name="Century Gothic", size=10, color="2C3E50")
-    accent_font = Font(name="Century Gothic", size=10, bold=True, color="78281F")
-    accent_fill = PatternFill(start_color=ACCENT_BG, end_color=ACCENT_BG, fill_type="solid")
+    data_font = Font(name="Segoe UI", size=10, color=TEXT_WHITE)
+    accent_data_font = Font(name="Segoe UI", size=10, bold=True, color=TEXT_ACCENT)
+    data_fill = PatternFill(start_color=CARD_BG, end_color=CARD_BG, fill_type="solid")
     
     thin_border = Border(
-        left=Side(style='thin', color=BORDER_COLOR),
-        right=Side(style='thin', color=BORDER_COLOR),
-        top=Side(style='thin', color=BORDER_COLOR),
-        bottom=Side(style='thin', color=BORDER_COLOR)
+        left=Side(style='thin', color=BORDER_DARK),
+        right=Side(style='thin', color=BORDER_DARK),
+        top=Side(style='thin', color=BORDER_DARK),
+        bottom=Side(style='thin', color=BORDER_DARK)
     )
     
-    headers = [
-        "📅 Data", "👤 Kto odpowiada", "⚡ Poziom Energii", "✨ Nastrój", 
-        "💭 Stan emocjonalny / Komfort", "💖 Główna Potrzeba", 
-        "🔥 Ochota na intymność", "🌹 Jestem gotowy/wa na...", "💬 Pytanie do partnera"
+    # Elegancki nagłówek ulotki
+    ws.merge_cells('A1:B1')
+    ws['A1'] = f"💖 KARTA SPOTKANIA: {aktualna_osoba.upper()}"
+    ws['A1'].font = title_font
+    ws['A1'].alignment = Alignment(horizontal="left", vertical="center")
+    ws.row_dimensions[1].height = 40
+    
+    # Dane do karty mobilnej (pionowy układ w dwóch kolumnach)
+    fields = [
+        ("📅 Data i Czas", datetime.now().strftime("%Y-%m-%d %H:%M")),
+        ("👤 Kto odpowiada", aktualna_osoba),
+        ("⚡ Poziom Energii", f"{energia} / 10"),
+        ("✨ Nastrój", nastroj_slowo),
+        ("💭 Stan emocjonalny / Komfort", komfort if komfort else "Wszystko w porządku"),
+        ("💖 Główna Potrzeba", potrzeba),
+        ("🔥 Ochota na intymność", seks_ochota),
+        ("🌹 Jestem gotowy/wa na...", ", ".join(zaznaczone_gotowosci) if zaznaczone_gotowosci else "Czułość i bliskość"),
+        ("💬 Pytanie do partnera", wlasne_pytanie if wlasne_pytanie else "Brak pytań na ten moment")
     ]
     
-    ws.append(headers)
-    ws.row_dimensions[1].height = 32
-    
-    for col_num, header in enumerate(headers, 1):
-        cell = ws.cell(row=1, column=col_num)
-        cell.font = header_font
-        cell.fill = header_fill
-        cell.alignment = header_alignment
-        cell.border = thin_border
+    for idx, (label, val) in enumerate(fields, start=3):
+        ws.row_dimensions[idx].height = 32
         
-    row_data = [
-        datetime.now().strftime("%Y-%m-%d %H:%M"),
-        aktualna_osoba,
-        f"{energia} / 10",
-        nastroj_slowo,
-        komfort if komfort else "Wszystko w porządku",
-        potrzeba,
-        seks_ochota,
-        ", ".join(zaznaczone_gotowosci) if zaznaczone_gotowosci else "Czułość i bliskość",
-        wlasne_pytanie if wlasne_pytanie else "Brak pytań na ten moment"
-    ]
-    
-    ws.append(row_data)
-    ws.row_dimensions[2].height = 45  # Wyższy wiersz, żeby tekst z listą zachcianek ładnie się układał
-    
-    for col_num in range(1, len(headers) + 1):
-        cell = ws.cell(row=2, column=col_num)
-        cell.font = data_font
-        cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
-        cell.border = thin_border
+        # Etykieta (Lewa kolumna)
+        cell_lbl = ws.cell(row=idx, column=1, value=label)
+        cell_lbl.font = header_font
+        cell_lbl.fill = header_fill
+        cell_lbl.alignment = Alignment(horizontal="left", vertical="center", indent=1)
+        cell_lbl.border = thin_border
         
-        # Subtelne wyróżnienie kolumny z intymnością i gotowością
-        if col_num in [7, 8]:
-            cell.font = accent_font
-            cell.fill = accent_fill
+        # Wartość (Prawa kolumna)
+        cell_val = ws.cell(row=idx, column=2, value=val)
+        # Podświetlenie najważniejszych sekcji na wyróżniający kolor
+        if "intymność" in label.lower() or "gotowy" in label.lower():
+            cell_val.font = accent_data_font
+        else:
+            cell_val.font = data_font
             
-    # Automatyczne dopasowanie szerokości kolumn z zapasem na czytelność
-    for col in ws.columns:
-        max_len = max(len(str(cell.value or '')) for cell in col)
-        col_letter = get_column_letter(col[0].column)
-        ws.column_dimensions[col_letter].width = max(max_len + 4, 20)
+        cell_val.fill = data_fill
+        cell_val.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True, indent=1)
+        cell_val.border = thin_border
+        
+    # Idealne dopasowanie szerokości pod ekran telefonu
+    ws.column_dimensions['A'].width = 30
+    ws.column_dimensions['B'].width = 55
         
     output = BytesIO()
     wb.save(output)
     excel_data = output.getvalue()
     
     st.download_button(
-        label=f"🌹 Pobierz zmysłowy arkusz Excel ({aktualna_osoba})",
+        label=f"🖤 Pobierz kartę spotkania (Dark Mode) - {aktualna_osoba}",
         data=excel_data,
-        file_name=f"intymny_checkin_{aktualna_osoba.lower()}.xlsx",
+        file_name=f"karta_spotkania_{aktualna_osoba.lower()}_dark.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
