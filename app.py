@@ -9,16 +9,20 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 # Konfiguracja strony
 st.set_page_config(page_title="Intymny Check-in dla Par", page_icon="💖", layout="centered")
 
-# --- ROMANTYCZNY MOTYW CSS DLA APLIKACJI (Dark Mode / Bordo / Róż) ---
+# --- JASNY, CZYTELNY I ELEGANCKI MOTYW CSS (Warm Cream / Romantyczny) ---
 st.markdown("""
     <style>
     .stApp {
-        background-color: #120A13;
-        color: #FCE4EC;
+        background-color: #FAF6F0;
+        color: #2C1810;
     }
     h1, h2, h3 {
-        color: #F8BBD0 !important;
+        color: #880E4F !important;
         font-family: 'Segoe UI', sans-serif;
+    }
+    p, label, .stMarkdown, .stRadio div, .stCheckbox span {
+        color: #2C1810 !important;
+        font-size: 1.05rem;
     }
     .stButton>button {
         background: linear-gradient(90deg, #880E4F 0%, #AD1457 100%);
@@ -27,17 +31,22 @@ st.markdown("""
         border-radius: 8px;
         padding: 0.6rem 1.2rem;
         font-weight: bold;
-        box-shadow: 0 4px 10px rgba(136, 14, 79, 0.4);
+        box-shadow: 0 4px 10px rgba(136, 14, 79, 0.2);
     }
     .stButton>button:hover {
         background: linear-gradient(90deg, #AD1457 0%, #C2185B 100%);
         color: #FFFFFF;
     }
     .stTextInput>div>div>input, .stSelectbox>div>div>div, .stTextArea>div>div>textarea {
-        background-color: #211522;
-        color: #FCE4EC;
-        border: 1px solid #4A154B;
+        background-color: #FFFFFF;
+        color: #2C1810;
+        border: 1px solid #D7CCC8;
         border-radius: 6px;
+    }
+    .stAlert {
+        background-color: #FCE4EC;
+        color: #880E4F;
+        border: 1px solid #F8BBD0;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -59,7 +68,7 @@ baza_icebreakerow = [
     "Gdybyśmy mieli spędzić cały jutrzejszy dzień leżąc w łóżku, o czym byśmy rozmawiali?"
 ]
 
-# Sekcja Icebreaker w boczku lub na górze
+# Sekcja Icebreaker
 with st.container():
     st.info("🧊 **Przełamywacz lodów (Icebreaker na dziś):**")
     if st.button("✨ Wylosuj jedno sekretne pytanie na dziś"):
@@ -153,7 +162,7 @@ wlasne_pytanie = st.text_input(f"{aktualna_osoba}: Masz specjalne pytanie lub pr
 
 st.divider()
 
-# Przycisk zapisu w sesji (głównie dla trybu razem)
+# Przycisk zapisu w sesji
 if st.button(f"Zapisz odpowiedzi dla: {aktualna_osoba}"):
     st.session_state.odpowiedzi[aktualna_osoba] = {
         "Data": datetime.now().strftime("%Y-%m-%d %H:%M"),
@@ -175,32 +184,32 @@ if st.button(f"Zapisz odpowiedzi dla: {aktualna_osoba}"):
 
 st.divider()
 
-# --- FUNKCJA GENEROWANIA EXCELA (DARK MODE) ---
+# --- FUNKCJA GENEROWANIA EXCELA (Nadal w ładnym stylu dopasowanym do pliku) ---
 def generuj_excel_karty(dane_karty, imie_wypelniajacego):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Karta Spotkania"
     ws.views.sheetView[0].showGridLines = False
     
-    CARD_BG = "1A1A1A"
-    HEADER_BG = "2C2C2C"
-    TEXT_WHITE = "FFFFFF"
-    TEXT_ACCENT = "FFD700"
-    BORDER_DARK = "333333"
+    CARD_BG = "FAF6F0"
+    HEADER_BG = "EFEBE9"
+    TEXT_DARK = "2C1810"
+    TEXT_ACCENT = "880E4F"
+    BORDER_LIGHT = "D7CCC8"
     
-    title_font = Font(name="Segoe UI", size=14, bold=True, color="FF69B4")
-    header_font = Font(name="Segoe UI", size=10, bold=True, color=TEXT_WHITE)
+    title_font = Font(name="Segoe UI", size=14, bold=True, color="880E4F")
+    header_font = Font(name="Segoe UI", size=10, bold=True, color=TEXT_DARK)
     header_fill = PatternFill(start_color=HEADER_BG, end_color=HEADER_BG, fill_type="solid")
     
-    data_font = Font(name="Segoe UI", size=10, color=TEXT_WHITE)
+    data_font = Font(name="Segoe UI", size=10, color=TEXT_DARK)
     accent_data_font = Font(name="Segoe UI", size=10, bold=True, color=TEXT_ACCENT)
     data_fill = PatternFill(start_color=CARD_BG, end_color=CARD_BG, fill_type="solid")
     
     thin_border = Border(
-        left=Side(style='thin', color=BORDER_DARK),
-        right=Side(style='thin', color=BORDER_DARK),
-        top=Side(style='thin', color=BORDER_DARK),
-        bottom=Side(style='thin', color=BORDER_DARK)
+        left=Side(style='thin', color=BORDER_LIGHT),
+        right=Side(style='thin', color=BORDER_LIGHT),
+        top=Side(style='thin', color=BORDER_LIGHT),
+        bottom=Side(style='thin', color=BORDER_LIGHT)
     )
     
     ws.merge_cells('A1:B1')
@@ -254,7 +263,7 @@ def generuj_excel_karty(dane_karty, imie_wypelniajacego):
     return output.getvalue()
 
 
-# --- OBSŁUGA POBIERANIA / PORÓWNANIA W ZALEŻNOŚCI OD TRYBU ---
+# --- OBSŁUGA POBIERANIA / PORÓWNANIA ---
 if "Jesteśmy razem" in tryb_relacji:
     st.subheader("📥 Pobierz kartę wybranej osoby")
     osoba_do_pobrania = st.selectbox("Wybierz czyją kartę pobrać:", [st.session_state.imie_1, st.session_state.imie_2], key="pobierz_razem")
@@ -266,7 +275,7 @@ if "Jesteśmy razem" in tryb_relacji:
             st.download_button(
                 label=f"Pobierz kartę dla: {osoba_do_pobrania}",
                 data=excel_bytes,
-                file_name=f"karta_spotkania_{osoba_do_pobrania.lower()}_dark.xlsx",
+                file_name=f"karta_spotkania_{osoba_do_pobrania.lower()}_light.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
         else:
@@ -287,11 +296,10 @@ if "Jesteśmy razem" in tryb_relacji:
             st.download_button(
                 label=f"Pobierz kartę dla: {osoba_do_pobrania}",
                 data=excel_bytes,
-                file_name=f"karta_spotkania_{osoba_do_pobrania.lower()}_dark.xlsx",
+                file_name=f"karta_spotkania_{osoba_do_pobrania.lower()}_light.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-    # Sekcja porównania dostępna w tym trybie, gdy są dane
     if len(st.session_state.odpowiedzi) >= 2:
         st.divider()
         st.header("✨ Porównanie Waszych odpowiedzi na żywo")
@@ -311,7 +319,6 @@ if "Jesteśmy razem" in tryb_relacji:
             st.write(f"Granice: {oB['Granice']}")
 
 else:
-    # Tryb relacji na odległość
     st.subheader("✈️ Tryb relacji na odległość")
     st.write("Wypełnij formularz jako Ty, pobierz swoją zmysłową kartę w pliku Excel i wyślij ją partnerowi.")
     
