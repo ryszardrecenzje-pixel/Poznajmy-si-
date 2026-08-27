@@ -6,12 +6,12 @@ import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 
-st.set_page_config(page_title="Quiz dla Par", page_icon="💖", layout="centered")
+st.set_page_config(page_title="Intymny Quiz dla Par", page_icon="💖", layout="centered")
 
 st.title("💖 Przedspotkaniowy Check-in dla Par")
-st.write("Skonfigurujcie aplikację swoimi imionami, a następnie wypełnijcie quiz, aby dopasować spotkanie do Waszych potrzeb.")
+st.write("Wypełnijcie quiz, aby otworzyć się na siebie i sprawdzić, na co macie dziś ochotę.")
 
-# Sekcja ustawienia imion (zapisujemy w sesji Streamlita, żeby pamiętało oba imiona)
+# Sekcja ustawienia imion
 if "imie_1" not in st.session_state:
     st.session_state.imie_1 = "Osoba A"
 if "imie_2" not in st.session_state:
@@ -78,23 +78,30 @@ wlasne_pytanie = st.text_input(f"{aktualna_osoba}: Masz jakieś specjalne pytani
 
 st.divider()
 
-# Podsumowanie i Generowanie Excela
-if st.button("Zapisz i pobierz ładny plik Excel"):
-    st.success(f"Dziękujemy, {aktualna_osoba}! Twoje odpowiedzi zostały przygotowane.")
+# Podsumowanie i Generowanie Zmysłowego Excela
+if st.button("Zapisz i pobierz zmysłowy arkusz Excel"):
+    st.success(f"Dziękujemy, {aktualna_osoba}! Twój arkusz został przygotowany z dbałością o detale.")
     
-    # Tworzenie arkusza przez openpyxl
+    # Tworzenie ekskluzywnego arkusza przez openpyxl
     wb = openpyxl.Workbook()
     ws = wb.active
-    ws.title = "Wyniki Quizu"
+    ws.title = "Intymny Check-in"
     ws.views.sheetView[0].showGridLines = True
     
-    HEADER_BG = "34495E"
-    HEADER_FG = "FFFFFF"
-    BORDER_COLOR = "D0D3D4"
+    # Paleta zmysłowa: Głęboki burgund / śliwka + pudrowy róż + elegancka czcionka
+    HEADER_BG = "512E5F"       # Głęboki śliwkowo-winny odcień
+    HEADER_FG = "FFFFFF"       # Biały tekst nagłówka
+    ACCENT_BG = "FADBD8"       # Miękki pudrowy róż dla wyróżnień
+    BORDER_COLOR = "E8DAEF"    # Delikatne liliowo-różowe obramowanie
     
-    header_font = Font(name="Calibri", size=11, bold=True, color=HEADER_FG)
+    header_font = Font(name="Century Gothic", size=11, bold=True, color=HEADER_FG)
     header_fill = PatternFill(start_color=HEADER_BG, end_color=HEADER_BG, fill_type="solid")
     header_alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    
+    data_font = Font(name="Century Gothic", size=10, color="2C3E50")
+    accent_font = Font(name="Century Gothic", size=10, bold=True, color="78281F")
+    accent_fill = PatternFill(start_color=ACCENT_BG, end_color=ACCENT_BG, fill_type="solid")
+    
     thin_border = Border(
         left=Side(style='thin', color=BORDER_COLOR),
         right=Side(style='thin', color=BORDER_COLOR),
@@ -103,13 +110,13 @@ if st.button("Zapisz i pobierz ładny plik Excel"):
     )
     
     headers = [
-        "Data", "Osoba", "Poziom Energii", "Nastrój", 
-        "Stan emocjonalny / Komfort", "Główna potrzeba", 
-        "Ochota na intymność", "Jestem gotowy/wa na...", "Własne pytanie"
+        "📅 Data", "👤 Kto odpowiada", "⚡ Poziom Energii", "✨ Nastrój", 
+        "💭 Stan emocjonalny / Komfort", "💖 Główna Potrzeba", 
+        "🔥 Ochota na intymność", "🌹 Jestem gotowy/wa na...", "💬 Pytanie do partnera"
     ]
     
     ws.append(headers)
-    ws.row_dimensions[1].height = 28
+    ws.row_dimensions[1].height = 32
     
     for col_num, header in enumerate(headers, 1):
         cell = ws.cell(row=1, column=col_num)
@@ -121,41 +128,48 @@ if st.button("Zapisz i pobierz ładny plik Excel"):
     row_data = [
         datetime.now().strftime("%Y-%m-%d %H:%M"),
         aktualna_osoba,
-        energia,
+        f"{energia} / 10",
         nastroj_slowo,
-        komfort if komfort else "Brak uwag",
+        komfort if komfort else "Wszystko w porządku",
         potrzeba,
         seks_ochota,
-        ", ".join(zaznaczone_gotowosci) if zaznaczone_gotowosci else "Brak",
-        wlasne_pytanie if wlasne_pytanie else "Brak"
+        ", ".join(zaznaczone_gotowosci) if zaznaczone_gotowosci else "Czułość i bliskość",
+        wlasne_pytanie if wlasne_pytanie else "Brak pytań na ten moment"
     ]
     
     ws.append(row_data)
-    ws.row_dimensions[2].height = 35
+    ws.row_dimensions[2].height = 45  # Wyższy wiersz, żeby tekst z listą zachcianek ładnie się układał
     
     for col_num in range(1, len(headers) + 1):
         cell = ws.cell(row=2, column=col_num)
-        cell.alignment = Alignment(vertical="center", wrap_text=True)
+        cell.font = data_font
+        cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
         cell.border = thin_border
         
+        # Subtelne wyróżnienie kolumny z intymnością i gotowością
+        if col_num in [7, 8]:
+            cell.font = accent_font
+            cell.fill = accent_fill
+            
+    # Automatyczne dopasowanie szerokości kolumn z zapasem na czytelność
     for col in ws.columns:
         max_len = max(len(str(cell.value or '')) for cell in col)
         col_letter = get_column_letter(col[0].column)
-        ws.column_dimensions[col_letter].width = max(max_len + 4, 18)
+        ws.column_dimensions[col_letter].width = max(max_len + 4, 20)
         
     output = BytesIO()
     wb.save(output)
     excel_data = output.getvalue()
     
     st.download_button(
-        label=f"📥 Pobierz plik Excel z wynikami ({aktualna_osoba})",
+        label=f"🌹 Pobierz zmysłowy arkusz Excel ({aktualna_osoba})",
         data=excel_data,
-        file_name=f"quiz_wyniki_{aktualna_osoba.lower()}.xlsx",
+        file_name=f"intymny_checkin_{aktualna_osoba.lower()}.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
     with st.expander("Zobacz podsumowanie na ekranie"):
-        st.write(f"**Poziom energii:** {energia}")
+        st.write(f"**Poziom energii:** {energia}/10")
         st.write(f"**Nastrój:** {nastroj_slowo}")
         st.write(f"**Komfort/Emocje:** {komfort if komfort else 'Brak uwag'}")
         st.write(f"**Główna potrzeba:** {potrzeba}")
