@@ -9,50 +9,50 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 # Konfiguracja strony
 st.set_page_config(page_title="Intymny Check-in dla Par", page_icon="💖", layout="centered")
 
-# --- JASNY, CZYTELNY I ELEGANCKI MOTYW CSS (Warm Cream / Romantyczny) ---
+# --- CUKIERKOWY, RÓŻOWO-BORDO MOTYW CSS ---
 st.markdown("""
     <style>
     .stApp {
-        background-color: #FAF6F0;
-        color: #2C1810;
+        background-color: #FFF0F5;
+        color: #4A0E2E;
     }
     h1, h2, h3 {
-        color: #880E4F !important;
+        color: #AD1457 !important;
         font-family: 'Segoe UI', sans-serif;
     }
     p, label, .stMarkdown, .stRadio div, .stCheckbox span {
-        color: #2C1810 !important;
+        color: #581845 !important;
         font-size: 1.05rem;
     }
     .stButton>button {
-        background: linear-gradient(90deg, #880E4F 0%, #AD1457 100%);
+        background: linear-gradient(90deg, #E91E63 0%, #880E4F 100%);
         color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: 12px;
         padding: 0.6rem 1.2rem;
         font-weight: bold;
-        box-shadow: 0 4px 10px rgba(136, 14, 79, 0.2);
+        box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
     }
     .stButton>button:hover {
-        background: linear-gradient(90deg, #AD1457 0%, #C2185B 100%);
+        background: linear-gradient(90deg, #C2185B 0%, #AD1457 100%);
         color: #FFFFFF;
     }
     .stTextInput>div>div>input, .stSelectbox>div>div>div, .stTextArea>div>div>textarea {
         background-color: #FFFFFF;
-        color: #2C1810;
-        border: 1px solid #D7CCC8;
-        border-radius: 6px;
+        color: #4A0E2E;
+        border: 2px solid #F8BBD0;
+        border-radius: 8px;
     }
     .stAlert {
-        background-color: #FCE4EC;
+        background-color: #F8BBD0;
         color: #880E4F;
-        border: 1px solid #F8BBD0;
+        border: 1px solid #EC407A;
     }
     </style>
 """, unsafe_allow_html=True)
 
 st.title("💖 Przedspotkaniowy Check-in dla Par")
-st.write("Ekskluzywne narzędzie do odkrywania nastrojów, potrzeb i granic – blisko siebie lub na odległość.")
+st.write("Słodkie, intymne narzędzie do odkrywania nastrojów, potrzeb i granic – blisko siebie lub na odległość.")
 
 # Baza pytań na Icebreaker (Przełamywacz lodów)
 baza_icebreakerow = [
@@ -190,18 +190,19 @@ if st.button(f"Zapisz odpowiedzi dla: {aktualna_osoba}"):
 
 st.divider()
 
-# --- FUNKCJA GENEROWANIA EXCELA ---
+# --- FUNKCJA GENEROWANIA EXCELA (CUKIERKOWY RÓŻ I BORDO) ---
 def generuj_excel_karty(dane_karty, imie_wypelniajacego):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Karta Spotkania"
     ws.views.sheetView[0].showGridLines = False
     
-    CARD_BG = "FAF6F0"
-    HEADER_BG = "EFEBE9"
-    TEXT_DARK = "2C1810"
-    TEXT_ACCENT = "880E4F"
-    BORDER_LIGHT = "D7CCC8"
+    # Cukierkowa paleta (Pudrowy róż tła, ciemne bordo nagłówki, fuksja akcenty)
+    CARD_BG = "FFF0F5"
+    HEADER_BG = "F8BBD0"
+    TEXT_DARK = "4A0E2E"
+    TEXT_ACCENT = "AD1457"
+    BORDER_PINK = "F48FB1"
     
     title_font = Font(name="Segoe UI", size=14, bold=True, color="880E4F")
     header_font = Font(name="Segoe UI", size=10, bold=True, color=TEXT_DARK)
@@ -212,10 +213,10 @@ def generuj_excel_karty(dane_karty, imie_wypelniajacego):
     data_fill = PatternFill(start_color=CARD_BG, end_color=CARD_BG, fill_type="solid")
     
     thin_border = Border(
-        left=Side(style='thin', color=BORDER_LIGHT),
-        right=Side(style='thin', color=BORDER_LIGHT),
-        top=Side(style='thin', color=BORDER_LIGHT),
-        bottom=Side(style='thin', color=BORDER_LIGHT)
+        left=Side(style='thin', color=BORDER_PINK),
+        right=Side(style='thin', color=BORDER_PINK),
+        top=Side(style='thin', color=BORDER_PINK),
+        bottom=Side(style='thin', color=BORDER_PINK)
     )
     
     ws.merge_cells('A1:B1')
@@ -276,14 +277,14 @@ if "Jesteśmy razem" in tryb_relacji:
     st.subheader("📥 Pobierz kartę wybranej osoby")
     osoba_do_pobrania = st.selectbox("Wybierz czyją kartę pobrać:", [st.session_state.imie_1, st.session_state.imie_2], key="pobierz_razem")
     
-    if st.button("Pobierz zmysłowy plik Excel"):
+    if st.button("Pobierz cukierkowy plik Excel"):
         if osoba_do_pobrania in st.session_state.odpowiedzi:
             dane = st.session_state.odpowiedzi[osoba_do_pobrania]
             excel_bytes = generuj_excel_karty(dane, osoba_do_pobrania)
             st.download_button(
                 label=f"Pobierz kartę dla: {osoba_do_pobrania}",
                 data=excel_bytes,
-                file_name=f"karta_spotkania_{osoba_do_pobrania.lower()}_light.xlsx",
+                file_name=f"karta_spotkania_{osoba_do_pobrania.lower()}_pink.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
         else:
@@ -307,7 +308,7 @@ if "Jesteśmy razem" in tryb_relacji:
             st.download_button(
                 label=f"Pobierz kartę dla: {osoba_do_pobrania}",
                 data=excel_bytes,
-                file_name=f"karta_spotkania_{osoba_do_pobrania.lower()}_light.xlsx",
+                file_name=f"karta_spotkania_{osoba_do_pobrania.lower()}_pink.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
@@ -331,7 +332,7 @@ if "Jesteśmy razem" in tryb_relacji:
 
 else:
     st.subheader("✈️ Tryb relacji na odległość")
-    st.write("Wypełnij formularz jako Ty, pobierz swoją zmysłową kartę w pliku Excel i wyślij ją partnerowi.")
+    st.write("Wypełnij formularz jako Ty, pobierz swoją cukierkową kartę w pliku Excel i wyślij ją partnerowi.")
     
     if st.button("Pobierz moją kartę spotkania (Excel)"):
         dane_odleglosc = {
