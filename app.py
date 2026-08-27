@@ -9,7 +9,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 # Konfiguracja strony
 st.set_page_config(page_title="Intymny Check-in dla Par", page_icon="💖", layout="centered")
 
-# --- MOTYW: RÓŻOWE TŁO, SERDUSZKA W TLE ORAZ W 100% BŁĘKITNE POLA I LISTY ROZWIJANE ---
+# --- MOTYW CSS (GŁÓWNIE OGÓLNE STYLOWANIE, KOLORY WIDGETÓW PRZEJMUJE config.toml) ---
 st.markdown("""
     <style>
     .stApp {
@@ -39,36 +39,6 @@ st.markdown("""
         background: linear-gradient(90deg, #C2185B 0%, #AD1457 100%);
         color: #FFFFFF;
     }
-    
-    /* POLA TEKSTOWE */
-    .stTextInput input, .stTextArea textarea {
-        background-color: #E3F2FD !important;
-        color: #0D47A1 !important;
-        border: 2px solid #90CAF9 !important;
-        border-radius: 8px;
-        font-weight: 500;
-    }
-    
-    /* KOMPLEKSOWY FIX DLA WSZYSTKICH LIST ROZWIJANYCH (SELECTBOX) */
-    div[data-baseweb="select"], 
-    div[data-baseweb="select"] > div, 
-    div[data-baseweb="select"] div,
-    div[role="combobox"],
-    div[data-baseweb="block"] {
-        background-color: #E3F2FD !important;
-        border-color: #90CAF9 !important;
-        border-radius: 8px !important;
-    }
-    
-    /* KOLOR TEKSTU W LISTACH ROZWIJANYCH */
-    div[data-baseweb="select"] span, 
-    div[role="combobox"] span,
-    div[data-baseweb="select"] div {
-        color: #0D47A1 !important;
-        font-weight: 500 !important;
-    }
-    
-    /* Dymki info/success */
     .stAlert, div[data-baseweb="notification"] {
         background-color: #FFFFFF !important;
         color: #4A0E2E !important;
@@ -222,32 +192,33 @@ if st.button(f"Zapisz odpowiedzi dla: {aktualna_osoba}"):
 
 st.divider()
 
-# --- FUNKCJA GENEROWANIA EXCELA (CUKIERKOWY RÓŻ I BORDO) ---
+# --- FUNKCJA GENEROWANIA EXCELA (TERAZ W CAŁOŚCI RÓŻOWO-BŁĘKITNY!) ---
 def generuj_excel_karty(dane_karty, imie_wypelniajacego):
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Karta Spotkania"
     ws.views.sheetView[0].showGridLines = False
     
-    CARD_BG = "FFF0F5"
-    HEADER_BG = "F8BBD0"
+    # Kolory dopasowane do aplikacji (#E3F2FD to błękit, #F8BBD0 to róż, #AD1457 to bordowy akcent)
+    CELL_BG_BLUE = "E3F2FD"
+    HEADER_BG_PINK = "F8BBD0"
     TEXT_DARK = "4A0E2E"
     TEXT_ACCENT = "AD1457"
-    BORDER_PINK = "F48FB1"
+    BORDER_COLOR = "90CAF9"
     
     title_font = Font(name="Segoe UI", size=14, bold=True, color="880E4F")
     header_font = Font(name="Segoe UI", size=10, bold=True, color=TEXT_DARK)
-    header_fill = PatternFill(start_color=HEADER_BG, end_color=HEADER_BG, fill_type="solid")
+    header_fill = PatternFill(start_color=HEADER_BG_PINK, end_color=HEADER_BG_PINK, fill_type="solid")
     
-    data_font = Font(name="Segoe UI", size=10, color=TEXT_DARK)
+    data_font = Font(name="Segoe UI", size=10, color="0D47A1")
     accent_data_font = Font(name="Segoe UI", size=10, bold=True, color=TEXT_ACCENT)
-    data_fill = PatternFill(start_color=CARD_BG, end_color=CARD_BG, fill_type="solid")
+    data_fill = PatternFill(start_color=CELL_BG_BLUE, end_color=CELL_BG_BLUE, fill_type="solid")
     
     thin_border = Border(
-        left=Side(style='thin', color=BORDER_PINK),
-        right=Side(style='thin', color=BORDER_PINK),
-        top=Side(style='thin', color=BORDER_PINK),
-        bottom=Side(style='thin', color=BORDER_PINK)
+        left=Side(style='thin', color=BORDER_COLOR),
+        right=Side(style='thin', color=BORDER_COLOR),
+        top=Side(style='thin', color=BORDER_COLOR),
+        bottom=Side(style='thin', color=BORDER_COLOR)
     )
     
     ws.merge_cells('A1:B1')
