@@ -9,7 +9,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 # Konfiguracja strony
 st.set_page_config(page_title="Intymny Check-in dla Par", page_icon="💖", layout="centered")
 
-# --- CUKIERKOWY RÓŻOWO-BORDO MOTYW ZE ZNAKAMI WODNYMI I CZYTELNYMI BOXAMI ---
+# --- MOTYW: RÓŻOWE TŁO, SERDUSZKA W TLE I BŁĘKITNE POLA FORMULARZA ---
 st.markdown("""
     <style>
     .stApp {
@@ -39,13 +39,17 @@ st.markdown("""
         background: linear-gradient(90deg, #C2185B 0%, #AD1457 100%);
         color: #FFFFFF;
     }
+    
+    /* BŁĘKITNE POLA FORMULARZA DO WPISYWANIA ODPOWIEDZI */
     .stTextInput>div>div>input, .stSelectbox>div>div>div, .stTextArea>div>div>textarea {
-        background-color: #FFFFFF;
-        color: #4A0E2E;
-        border: 2px solid #F8BBD0;
+        background-color: #E3F2FD !important;
+        color: #0D47A1 !important;
+        border: 2px solid #90CAF9 !important;
         border-radius: 8px;
+        font-weight: 500;
     }
-    /* Pełna widoczność i kontrast dla dymków info/success */
+    
+    /* Czytelna widoczność i kontrast dla dymków info/success */
     .stAlert, div[data-baseweb="notification"] {
         background-color: #FFFFFF !important;
         color: #4A0E2E !important;
