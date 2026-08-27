@@ -9,7 +9,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 # Konfiguracja strony
 st.set_page_config(page_title="Intymny Check-in dla Par", page_icon="💖", layout="centered")
 
-# --- CUKIERKOWY RÓŻOWO-BORDO MOTYW ZE ZNAKAMI WODNYMI (SERDUSZKA W TLE) ---
+# --- CUKIERKOWY RÓŻOWO-BORDO MOTYW ZE ZNAKAMI WODNYMI I CZYTELNYMI BOXAMI ---
 st.markdown("""
     <style>
     .stApp {
@@ -45,10 +45,17 @@ st.markdown("""
         border: 2px solid #F8BBD0;
         border-radius: 8px;
     }
-    .stAlert {
-        background-color: #F8BBD0;
-        color: #880E4F;
-        border: 1px solid #EC407A;
+    /* Pełna widoczność i kontrast dla dymków info/success */
+    .stAlert, div[data-baseweb="notification"] {
+        background-color: #FFFFFF !important;
+        color: #4A0E2E !important;
+        border: 2px solid #EC407A !important;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(236, 64, 122, 0.15);
+    }
+    .stAlert p, div[data-baseweb="notification"] p {
+        color: #4A0E2E !important;
+        font-weight: 500;
     }
     </style>
 """, unsafe_allow_html=True)
