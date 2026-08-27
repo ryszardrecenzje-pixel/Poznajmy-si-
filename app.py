@@ -197,7 +197,7 @@ if "Jesteśmy razem" in tryb_relacji:
     if st.button("Pobierz zmysłowy plik Excel"):
         if osoba_do_pobrania in st.session_state.odpowiedzi:
             dane = st.session_state.odpowiedzi[osoba_do_pobrania]
-            excel_ bytes = generuj_excel_karty(dane, osoba_do_pobrania)
+            excel_bytes = generuj_excel_karty(dane, osoba_do_pobrania)
             st.download_button(
                 label=f"Pobierz kartę dla: {osoba_do_pobrania}",
                 data=excel_bytes,
@@ -205,7 +205,6 @@ if "Jesteśmy razem" in tryb_relacji:
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
         else:
-            # Tworzymy tymczasowe dane z bieżących wyborów suwaków, jeśli nie kliknięto jeszcze "Zapisz"
             dane_tymczasowe = {
                 "Data": datetime.now().strftime("%Y-%m-%d %H:%M"),
                 "Energia": energia, "Nastrój": nastroj_slowo,
@@ -226,7 +225,7 @@ if "Jesteśmy razem" in tryb_relacji:
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
 
-    # Sekcja porównania dostępna TYLKO w tym trybie, gdy są dane
+    # Sekcja porównania dostępna w tym trybie, gdy są dane
     if len(st.session_state.odpowiedzi) >= 2:
         st.divider()
         st.header("✨ Porównanie Waszych odpowiedzi na żywo")
@@ -246,7 +245,7 @@ if "Jesteśmy razem" in tryb_relacji:
 else:
     # Tryb relacji na odległość
     st.subheader("✈️ Tryb relacji na odległość")
-    st.write("Wypełnij formularz jako Ty, pobierz swoją zmysłową kartę w pliku Excel i wyślij ją partnerowi (np. mailem lub komunikatorem).")
+    st.write("Wypełnij formularz jako Ty, pobierz swoją zmysłową kartę w pliku Excel i wyślij ją partnerowi.")
     
     if st.button("Pobierz moją kartę spotkania (Excel)"):
         dane_odleglosc = {
