@@ -156,7 +156,11 @@ for opcja in gotowosc_opcje:
     if st.checkbox(opcja, key=f"{aktualna_osoba}_{opcja}"):
         zaznaczone_gotowosci.append(opcja)
 
-st.header("5. Pytania i Docenienie")
+st.header("5. Życzenia i Inicjatywy (Opcjonalnie)")
+zrob_ze_mna = st.text_input(f"{aktualna_osoba}: Zrób ze mna coś... (np. porwij mnie gdzieś, zrób mi masaż, pogaskaj po włosach)")
+chce_zrobic = st.text_input(f"{aktualna_osoba}: Chcę zrobić coś... (np. chcę Ci zrobić pyszną kolację, chcę Cię dzisiaj zaskoczyć)")
+
+st.header("6. Pytania i Docenienie")
 komplement = st.text_input(f"{aktualna_osoba}: Jaki komplement chcesz usłyszeć dzisiaj wieczorem?")
 wlasne_pytanie = st.text_input(f"{aktualna_osoba}: Masz specjalne pytanie lub prośbę do partnera?")
 
@@ -177,6 +181,8 @@ if st.button(f"Zapisz odpowiedzi dla: {aktualna_osoba}"):
         "Pikantna niespodzianka": pikantna_niespodzianka if pikantna_niespodzianka else "Brak",
         "Motyw przewodni": motyw_przewodni if motyw_przewodni else "Romantyczny wieczór",
         "Gotowość": zaznaczone_gotowosci,
+        "Zrób ze mną coś": zrob_ze_mna if zrob_ze_mna else "Brak",
+        "Chcę zrobić coś": chce_zrobic if chce_zrobic else "Brak",
         "Komplement": komplement if komplement else "Miłe słowo",
         "Własne pytanie": wlasne_pytanie if wlasne_pytanie else "Brak"
     }
@@ -184,7 +190,7 @@ if st.button(f"Zapisz odpowiedzi dla: {aktualna_osoba}"):
 
 st.divider()
 
-# --- FUNKCJA GENEROWANIA EXCELA (Nadal w ładnym stylu dopasowanym do pliku) ---
+# --- FUNKCJA GENEROWANIA EXCELA ---
 def generuj_excel_karty(dane_karty, imie_wypelniajacego):
     wb = openpyxl.Workbook()
     ws = wb.active
@@ -232,6 +238,8 @@ def generuj_excel_karty(dane_karty, imie_wypelniajacego):
         ("🎁 Pikantna niespodzianka", dane_karty["Pikantna niespodzianka"]),
         ("🌙 Motyw przewodni", dane_karty["Motyw przewodni"]),
         ("🌹 Jestem gotowy/wa na...", ", ".join(dane_karty["Gotowość"]) if dane_karty["Gotowość"] else "Czułość i bliskość"),
+        ("💌 Zrób ze mną coś...", dane_karty["Zrób ze mną coś"]),
+        ("🔥 Chcę zrobić coś...", dane_karty["Chcę zrobić coś"]),
         ("✨ Komplement", dane_karty["Komplement"]),
         ("💬 Pytanie do partnera", dane_karty["Własne pytanie"])
     ]
@@ -246,7 +254,7 @@ def generuj_excel_karty(dane_karty, imie_wypelniajacego):
         cell_lbl.border = thin_border
         
         cell_val = ws.cell(row=idx, column=2, value=val)
-        if "intymność" in label.lower() or "gotowy" in label.lower() or "granice" in label.lower():
+        if "intymność" in label.lower() or "gotowy" in label.lower() or "granice" in label.lower() or "zrób ze mną" in label.lower():
             cell_val.font = accent_data_font
         else:
             cell_val.font = data_font
@@ -289,7 +297,10 @@ if "Jesteśmy razem" in tryb_relacji:
                 "Potrzeba": potrzeba, "Ochota na intymność": seks_ochota,
                 "Pikantna niespodzianka": pikantna_niespodzianka or "Brak",
                 "Motyw przewodni": motyw_przewodni or "Romantyczny wieczór",
-                "Gotowość": zaznaczone_gotowosci, "Komplement": komplement or "Miłe słowo",
+                "Gotowość": zaznaczone_gotowosci,
+                "Zrób ze mną coś": zrob_ze_mna or "Brak",
+                "Chcę zrobić coś": chce_zrobic or "Brak",
+                "Komplement": komplement or "Miłe słowo",
                 "Własne pytanie": wlasne_pytanie or "Brak"
             }
             excel_bytes = generuj_excel_karty(dane_tymczasowe, osoba_do_pobrania)
@@ -310,13 +321,13 @@ if "Jesteśmy razem" in tryb_relacji:
         with c1:
             st.markdown(f"**{st.session_state.imie_1}**")
             st.write(f"Miejsce: {oA['Klimat i Miejsce']}")
-            st.write(f"Energia: {oA['Energia']}/10 | Ochota: {oA['Ochota na intymność']}")
-            st.write(f"Granice: {oA['Granice']}")
+            st.write(f"Chcę zrobić: {oA['Chcę zrobić coś']}")
+            st.write(f"Zrób ze mną: {oA['Zrób ze mną coś']}")
         with c2:
             st.markdown(f"**{st.session_state.imie_2}**")
             st.write(f"Miejsce: {oB['Klimat i Miejsce']}")
-            st.write(f"Energia: {oB['Energia']}/10 | Ochota: {oB['Ochota na intymność']}")
-            st.write(f"Granice: {oB['Granice']}")
+            st.write(f"Chcę zrobić: {oB['Chcę zrobić coś']}")
+            st.write(f"Zrób ze mną: {oB['Zrób ze mną coś']}")
 
 else:
     st.subheader("✈️ Tryb relacji na odległość")
@@ -333,7 +344,10 @@ else:
             "Potrzeba": potrzeba, "Ochota na intymność": seks_ochota,
             "Pikantna niespodzianka": pikantna_niespodzianka or "Brak",
             "Motyw przewodni": motyw_przewodni or "Romantyczny wieczór",
-            "Gotowość": zaznaczone_gotowosci, "Komplement": komplement or "Miłe słowo",
+            "Gotowość": zaznaczone_gotowosci,
+            "Zrób ze mną coś": zrob_ze_mna or "Brak",
+            "Chcę zrobić coś": chce_zrobic or "Brak",
+            "Komplement": komplement or "Miłe słowo",
             "Własne pytanie": wlasne_pytanie or "Brak"
         }
         excel_bytes = generuj_excel_karty(dane_odleglosc, aktualna_osoba)
