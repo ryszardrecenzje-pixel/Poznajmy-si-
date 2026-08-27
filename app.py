@@ -2,13 +2,71 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 from io import BytesIO
+import random
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
+# Konfiguracja strony
 st.set_page_config(page_title="Intymny Check-in dla Par", page_icon="💖", layout="centered")
 
+# --- ROMANTYCZNY MOTYW CSS DLA APLIKACJI (Dark Mode / Bordo / Róż) ---
+st.markdown("""
+    <style>
+    .stApp {
+        background-color: #120A13;
+        color: #FCE4EC;
+    }
+    h1, h2, h3 {
+        color: #F8BBD0 !important;
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .stButton>button {
+        background: linear-gradient(90deg, #880E4F 0%, #AD1457 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.6rem 1.2rem;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(136, 14, 79, 0.4);
+    }
+    .stButton>button:hover {
+        background: linear-gradient(90deg, #AD1457 0%, #C2185B 100%);
+        color: #FFFFFF;
+    }
+    .stTextInput>div>div>input, .stSelectbox>div>div>div, .stTextArea>div>div>textarea {
+        background-color: #211522;
+        color: #FCE4EC;
+        border: 1px solid #4A154B;
+        border-radius: 6px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 st.title("💖 Przedspotkaniowy Check-in dla Par")
-st.write("Narzędzie do odkrywania nastrojów, potrzeb i granic – blisko siebie lub na odległość.")
+st.write("Ekskluzywne narzędzie do odkrywania nastrojów, potrzeb i granic – blisko siebie lub na odległość.")
+
+# Baza pytań na Icebreaker (Przełamywacz lodów)
+baza_icebreakerow = [
+    "Co w naszym związku sprawia, że czujesz się najsilniej kochany/a?",
+    "Gdybyśmy mogli natychmiast przenieść się w dowolne miejsce na świecie na ten weekend, gdzie by to było?",
+    "Jaka moja cecha lub zachowanie najbardziej Cię urzeka, kiedy o tym pomyślisz?",
+    "O jakiej naszej wspólnej chwili najczęściej myślisz z uśmiechem na twarzy?",
+    "Gdyby nasz związek był książką, to jaki nosiłby tytuł?",
+    "Jaka jest jedna mała rzecz, którą mogę zrobić w tym tygodniu, żeby odciążyć Cię mentalnie?",
+    "Jaki był Twój ulubiony moment z nami z ubiegłego miesiąca?",
+    "O jakim naszym wspólnym przeżyciu marzysz, a jeszcze tego nie zrobiliśmy?",
+    "Co najbardziej zaskoczyło Cię pozytywnie we mnie od początku naszej znajomości?",
+    "Gdybyśmy mieli spędzić cały jutrzejszy dzień leżąc w łóżku, o czym byśmy rozmawiali?"
+]
+
+# Sekcja Icebreaker w boczku lub na górze
+with st.container():
+    st.info("🧊 **Przełamywacz lodów (Icebreaker na dziś):**")
+    if st.button("✨ Wylosuj jedno sekretne pytanie na dziś"):
+        wylosowane_pytanie = random.choice(baza_icebreakerow)
+        st.success(f"💬 **Wylosowane pytanie:** {wylosowane_pytanie}")
+
+st.divider()
 
 # Wybór trybu relacji
 tryb_relacji = st.radio(
@@ -42,6 +100,12 @@ aktualna_osoba = st.radio("Kto teraz wypełnia quiz?", [st.session_state.imie_1,
 st.divider()
 
 # --- FORMULARZ PYTAŃ ---
+st.header("0. Klimat i Lokalizacja Randki")
+miejsce_randki = st.selectbox(
+    f"{aktualna_osoba}: Gdzie i w jakim klimacie spędzamy dzisiaj czas?",
+    ["W domu pod kocem 🛋️", "Kolacja przy świecach 🕯️", "Na mieście / randka poza domem 🌃", "Romantyczny spacer 🌙", "Własna niespodzianka 🎁"]
+)
+
 st.header("1. Nastrój, Energia i Bezpieczeństwo")
 energia = st.slider(f"{aktualna_osoba}: Jaki masz poziom energii?", 1, 10, 5)
 nastroj_slowo = st.selectbox(
@@ -93,6 +157,7 @@ st.divider()
 if st.button(f"Zapisz odpowiedzi dla: {aktualna_osoba}"):
     st.session_state.odpowiedzi[aktualna_osoba] = {
         "Data": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "Klimat i Miejsce": miejsce_randki,
         "Energia": energia,
         "Nastrój": nastroj_slowo,
         "Bezpieczeństwo": bezpiecz_pytanie if bezpiecz_pytanie else "Brak uwag",
@@ -117,7 +182,6 @@ def generuj_excel_karty(dane_karty, imie_wypelniajacego):
     ws.title = "Karta Spotkania"
     ws.views.sheetView[0].showGridLines = False
     
-    DARK_BG = "000000"
     CARD_BG = "1A1A1A"
     HEADER_BG = "2C2C2C"
     TEXT_WHITE = "FFFFFF"
@@ -148,6 +212,7 @@ def generuj_excel_karty(dane_karty, imie_wypelniajacego):
     fields = [
         ("📅 Data i Czas", dane_karty["Data"]),
         ("👤 Kto odpowiada", imie_wypelniajacego),
+        ("📍 Klimat / Miejsce randki", dane_karty["Klimat i Miejsce"]),
         ("⚡ Poziom Energii", f"{dane_karty['Energia']} / 10"),
         ("✨ Nastrój", dane_karty["Nastrój"]),
         ("🛡️ Bezpieczeństwo", dane_karty["Bezpieczeństwo"]),
@@ -207,6 +272,7 @@ if "Jesteśmy razem" in tryb_relacji:
         else:
             dane_tymczasowe = {
                 "Data": datetime.now().strftime("%Y-%m-%d %H:%M"),
+                "Klimat i Miejsce": miejsce_randki,
                 "Energia": energia, "Nastrój": nastroj_slowo,
                 "Bezpieczeństwo": bezpiecz_pytanie or "Brak uwag",
                 "Komfort/Emocje": komfort or "Brak uwag",
@@ -235,10 +301,12 @@ if "Jesteśmy razem" in tryb_relacji:
         c1, c2 = st.columns(2)
         with c1:
             st.markdown(f"**{st.session_state.imie_1}**")
+            st.write(f"Miejsce: {oA['Klimat i Miejsce']}")
             st.write(f"Energia: {oA['Energia']}/10 | Ochota: {oA['Ochota na intymność']}")
             st.write(f"Granice: {oA['Granice']}")
         with c2:
             st.markdown(f"**{st.session_state.imie_2}**")
+            st.write(f"Miejsce: {oB['Klimat i Miejsce']}")
             st.write(f"Energia: {oB['Energia']}/10 | Ochota: {oB['Ochota na intymność']}")
             st.write(f"Granice: {oB['Granice']}")
 
@@ -250,6 +318,7 @@ else:
     if st.button("Pobierz moją kartę spotkania (Excel)"):
         dane_odleglosc = {
             "Data": datetime.now().strftime("%Y-%m-%d %H:%M"),
+            "Klimat i Miejsce": miejsce_randki,
             "Energia": energia, "Nastrój": nastroj_slowo,
             "Bezpieczeństwo": bezpiecz_pytanie or "Brak uwag",
             "Komfort/Emocje": komfort or "Brak uwag",
