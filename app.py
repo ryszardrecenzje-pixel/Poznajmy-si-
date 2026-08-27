@@ -9,7 +9,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 # Konfiguracja strony
 st.set_page_config(page_title="Intymny Check-in dla Par", page_icon="💖", layout="centered")
 
-# --- MOTYW: RÓŻOWE TŁO, SERDUSZKA W TLE I BŁĘKITNE POLA FORMULARZA ---
+# --- MOTYW: RÓŻOWE TŁO, SERDUSZKA W TLE I BŁĘKITNE POLA ORAZ LISTY ROZWIJANE ---
 st.markdown("""
     <style>
     .stApp {
@@ -40,13 +40,18 @@ st.markdown("""
         color: #FFFFFF;
     }
     
-    /* BŁĘKITNE POLA FORMULARZA DO WPISYWANIA ODPOWIEDZI */
-    .stTextInput>div>div>input, .stSelectbox>div>div>div, .stTextArea>div>div>textarea {
+    /* BŁĘKITNE POLA TEKSTOWE ORAZ LISTY ROZWIJANE (SELECTBOX / DROPDOWN) */
+    .stTextInput input, .stTextArea textarea, div[data-baseweb="select"] > div {
         background-color: #E3F2FD !important;
         color: #0D47A1 !important;
         border: 2px solid #90CAF9 !important;
         border-radius: 8px;
         font-weight: 500;
+    }
+    
+    /* Kolor tekstu wybranej opcji w liście rozwijanej */
+    div[data-baseweb="select"] span {
+        color: #0D47A1 !important;
     }
     
     /* Czytelna widoczność i kontrast dla dymków info/success */
@@ -194,7 +199,7 @@ if st.button(f"Zapisz odpowiedzi dla: {aktualna_osoba}"):
         "Pikantna niespodzianka": pikantna_niespodzianka if pikantna_niespodzianka else "Brak",
         "Motyw przewodni": motyw_przewodni if motyw_przewodni else "Romantyczny wieczór",
         "Gotowość": zaznaczone_gotowosci,
-        "Zrób ze mną coś": zrob_ze_mna if zrob_ze_mna else "Brak",
+        "Zrób ze mna coś": zrob_ze_mna if zrob_ze_mna else "Brak",
         "Chcę zrobić coś": chce_zrobic if chce_zrobic else "Brak",
         "Komplement": komplement if komplement else "Miłe słowo",
         "Własne pytanie": wlasne_pytanie if wlasne_pytanie else "Brak"
