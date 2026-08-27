@@ -9,11 +9,13 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 # Konfiguracja strony
 st.set_page_config(page_title="Intymny Check-in dla Par", page_icon="💖", layout="centered")
 
-# --- CUKIERKOWY, RÓŻOWO-BORDO MOTYW CSS ---
+# --- CUKIERKOWY RÓŻOWO-BORDO MOTYW ZE ZNAKAMI WODNYMI (SERDUSZKA W TLE) ---
 st.markdown("""
     <style>
     .stApp {
         background-color: #FFF0F5;
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 50.8C29.6 50.6 8 36.8 3.5 28.5C-1.5 19.5 3 8 13.5 5.5C20 4 27.5 9 30 16.5C32.5 9 40 4 46.5 5.5C57 8 61.5 19.5 56.5 28.5C52 36.8 30.4 50.6 30 50.8Z' fill='%23F8BBD0' fill-opacity='0.25'/%3E%3C/svg%3E");
+        background-size: 50px 50px;
         color: #4A0E2E;
     }
     h1, h2, h3 {
@@ -197,7 +199,6 @@ def generuj_excel_karty(dane_karty, imie_wypelniajacego):
     ws.title = "Karta Spotkania"
     ws.views.sheetView[0].showGridLines = False
     
-    # Cukierkowa paleta (Pudrowy róż tła, ciemne bordo nagłówki, fuksja akcenty)
     CARD_BG = "FFF0F5"
     HEADER_BG = "F8BBD0"
     TEXT_DARK = "4A0E2E"
