@@ -59,15 +59,16 @@ wlasne_pytanie = st.text_input(f"{osoba}: Masz jakieś specjalne pytanie, które
 st.divider()
 
 # Podsumowanie
+# Podsumowanie
 if st.button("Zapisz / Podsumuj moje odpowiedzi"):
     st.success(f"Dziękujemy, {osoba}! Twoje odpowiedzi zostały zarejestrowane.")
     
     with st.expander("Zobacz podsumowanie swoich wyborów"):
-        st.write(**Poziom energii:**, energia)
-        st.write(**Nastrój:**, nastroj_slowo)
-        st.write(**Komfort/Emocje:**, komfort if komfort else "Brak uwag")
-        st.write(**Główna potrzeba:**, potrzeba)
-        st.write(**Ochota na intymność:**, seks_ochota)
-        st.write(**Wybrane aktywności:**, zaznaczone_ochoty)
+        st.write(f"**Poziom energii:** {energia}")
+        st.write(f"**Nastrój:** {nastroj_slowo}")
+        st.write(f"**Komfort/Emocje:** {komfort if komfort else 'Brak uwag'}")
+        st.write(f"**Główna potrzeba:** {potrzeba}")
+        st.write(f"**Ochota na intymność:** {seks_ochota}")
+        st.write(f"**Wybrane aktywności:** {zaznaczone_ochoty}")
         if wlasne_pytanie:
-            st.write(**Twoje specjalne pytanie:**, wlasne_pytanie)
+            st.write(f"**Twoje specjalne pytanie:** {wlasne_pytanie}")
