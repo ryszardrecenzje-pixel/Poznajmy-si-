@@ -9,7 +9,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 # Konfiguracja strony
 st.set_page_config(page_title="Intymny Check-in dla Par", page_icon="💖", layout="centered")
 
-# --- MOTYW: RÓŻOWE TŁO, SERDUSZKA W TLE ORAZ BŁĘKITNE POLA I WSZYSTKIE LISTY ROZWIJANE ---
+# --- MOTYW: RÓŻOWE TŁO, SERDUSZKA W TLE ORAZ W 100% BŁĘKITNE POLA I LISTY ROZWIJANE ---
 st.markdown("""
     <style>
     .stApp {
@@ -40,7 +40,7 @@ st.markdown("""
         color: #FFFFFF;
     }
     
-    /* UNIWERSALNE BŁĘKITNE TŁO DLA PÓL TEKSTOWYCH ORAZ WSZYSTKICH LIST ROZWIJANYCH */
+    /* POLA TEKSTOWE */
     .stTextInput input, .stTextArea textarea {
         background-color: #E3F2FD !important;
         color: #0D47A1 !important;
@@ -49,20 +49,26 @@ st.markdown("""
         font-weight: 500;
     }
     
-    /* Wzmocnione selektory dla list rozwijanych st.selectbox (BaseWeb) */
-    div[data-baseweb="select"], div[data-baseweb="select"] > div, div[role="combobox"] {
+    /* KOMPLEKSOWY FIX DLA WSZYSTKICH LIST ROZWIJANYCH (SELECTBOX) */
+    div[data-baseweb="select"], 
+    div[data-baseweb="select"] > div, 
+    div[data-baseweb="select"] div,
+    div[role="combobox"],
+    div[data-baseweb="block"] {
         background-color: #E3F2FD !important;
         border-color: #90CAF9 !important;
         border-radius: 8px !important;
     }
     
-    /* Kolor tekstu oraz wybranej opcji w liście rozwijanej */
-    div[data-baseweb="select"] span, div[role="combobox"] span {
+    /* KOLOR TEKSTU W LISTACH ROZWIJANYCH */
+    div[data-baseweb="select"] span, 
+    div[role="combobox"] span,
+    div[data-baseweb="select"] div {
         color: #0D47A1 !important;
         font-weight: 500 !important;
     }
     
-    /* Czytelna widoczność i kontrast dla dymków info/success */
+    /* Dymki info/success */
     .stAlert, div[data-baseweb="notification"] {
         background-color: #FFFFFF !important;
         color: #4A0E2E !important;
