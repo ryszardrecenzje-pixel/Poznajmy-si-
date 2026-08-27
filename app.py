@@ -9,7 +9,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 # Konfiguracja strony
 st.set_page_config(page_title="Intymny Check-in dla Par", page_icon="💖", layout="centered")
 
-# --- MOTYW: RÓŻOWE TŁO, SERDUSZKA W TLE I BŁĘKITNE POLA ORAZ LISTY ROZWIJANE ---
+# --- MOTYW: RÓŻOWE TŁO, SERDUSZKA W TLE ORAZ BŁĘKITNE POLA I WSZYSTKIE LISTY ROZWIJANE ---
 st.markdown("""
     <style>
     .stApp {
@@ -40,8 +40,8 @@ st.markdown("""
         color: #FFFFFF;
     }
     
-    /* BŁĘKITNE POLA TEKSTOWE ORAZ LISTY ROZWIJANE (SELECTBOX / DROPDOWN) */
-    .stTextInput input, .stTextArea textarea, div[data-baseweb="select"] > div {
+    /* UNIWERSALNE BŁĘKITNE TŁO DLA PÓL TEKSTOWYCH ORAZ WSZYSTKICH LIST ROZWIJANYCH */
+    .stTextInput input, .stTextArea textarea {
         background-color: #E3F2FD !important;
         color: #0D47A1 !important;
         border: 2px solid #90CAF9 !important;
@@ -49,9 +49,17 @@ st.markdown("""
         font-weight: 500;
     }
     
-    /* Kolor tekstu wybranej opcji w liście rozwijanej */
-    div[data-baseweb="select"] span {
+    /* Wzmocnione selektory dla list rozwijanych st.selectbox (BaseWeb) */
+    div[data-baseweb="select"], div[data-baseweb="select"] > div, div[role="combobox"] {
+        background-color: #E3F2FD !important;
+        border-color: #90CAF9 !important;
+        border-radius: 8px !important;
+    }
+    
+    /* Kolor tekstu oraz wybranej opcji w liście rozwijanej */
+    div[data-baseweb="select"] span, div[role="combobox"] span {
         color: #0D47A1 !important;
+        font-weight: 500 !important;
     }
     
     /* Czytelna widoczność i kontrast dla dymków info/success */
@@ -340,12 +348,12 @@ if "Jesteśmy razem" in tryb_relacji:
             st.markdown(f"**{st.session_state.imie_1}**")
             st.write(f"Miejsce: {oA['Klimat i Miejsce']}")
             st.write(f"Chcę zrobić: {oA['Chcę zrobić coś']}")
-            st.write(f"Zrób ze mną: {oA['Zrób ze mną coś']}")
+            st.write(f"Zrób ze mną: {oA['Zrób ze mna coś']}")
         with c2:
             st.markdown(f"**{st.session_state.imie_2}**")
             st.write(f"Miejsce: {oB['Klimat i Miejsce']}")
             st.write(f"Chcę zrobić: {oB['Chcę zrobić coś']}")
-            st.write(f"Zrób ze mną: {oB['Zrób ze mną coś']}")
+            st.write(f"Zrób ze mną: {oB['Zrób ze mna coś']}")
 
 else:
     st.subheader("✈️ Tryb relacji na odległość")
