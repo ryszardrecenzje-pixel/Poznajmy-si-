@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+from io import BytesIO
+import openpyxl
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+from openpyxl.utils import get_column_letter
 
 st.set_page_config(page_title="Quiz dla Par", page_icon="💖", layout="centered")
 
@@ -60,35 +64,82 @@ wlasne_pytanie = st.text_input(f"{osoba}: Masz jakieś specjalne pytanie, które
 
 st.divider()
 
-# Podsumowanie i Generowanie Excela
-if st.button("Zapisz i przygotuj plik Excel"):
-    st.success(f"Dziękujemy, {osoba}! Twoje odpowiedzi zostały przygotowane do pobrania.")
+# Podsumowanie i Generowanie Ładnego Excela
+if st.button("Zapisz i pobierz ładny plik Excel"):
+    st.success(f"Dziękujemy, {osoba}! Twoje odpowiedzi zostały przygotowane.")
     
-    # Przygotowanie danych do tabeli (Dataframe)
-    dane = {
-        "Data": [datetime.now().strftime("%Y-%m-%d %H:%M")],
-        "Osoba": [osoba],
-        "Poziom Energii": [energia],
-        "Nastrój": [nastroj_slowo],
-        "Stan emocjonalny / Komfort": [komfort if komfort else "Brak uwag"],
-        "Główna potrzeba": [potrzeba],
-        "Ochota na intymność": [seks_ochota],
-        "Wybrane zachcianki": [", ".join(zaznaczone_ochoty)],
-        "Własne pytanie": [wlasne_pytanie if wlasne_pytanie else "Brak"]
-    }
+    # 1. Tworzenie arkusza przez openpyxl
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Wyniki Quizu"
+    ws.views.sheetView[0].showGridLines = True
     
-    df = pd.DataFrame(dane)
+    # Stylizacja nagłówków (ciemny, elegancki kolor)
+    HEADER_BG = "34495E"
+    HEADER_FG = "FFFFFF"
+    BORDER_COLOR = "D0D3D4"
     
-    # Zapis do pliku Excel w pamięci (funkcja do pobrania)
-    from io import BytesIO
+    header_font = Font(name="Calibri", size=11, bold=True, color=HEADER_FG)
+    header_fill = PatternFill(start_color=HEADER_BG, end_color=HEADER_BG, fill_type="solid")
+    header_alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    thin_border = Border(
+        left=Side(style='thin', color=BORDER_COLOR),
+        right=Side(style='thin', color=BORDER_COLOR),
+        top=Side(style='thin', color=BORDER_COLOR),
+        bottom=Side(style='thin', color=BORDER_COLOR)
+    )
+    
+    headers = [
+        "Data", "Osoba", "Poziom Energii", "Nastrój", 
+        "Stan emocjonalny / Komfort", "Główna potrzeba", 
+        "Ochota na intymność", "Wybrane zachcianki", "Własne pytanie"
+    ]
+    
+    ws.append(headers)
+    ws.row_dimensions[1].height = 28
+    
+    for col_num, header in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col_num)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = header_alignment
+        cell.border = thin_border
+        
+    # Wstawianie danych użytkownika
+    row_data = [
+        datetime.now().strftime("%Y-%m-%d %H:%M"),
+        osoba,
+        energia,
+        nastroj_slowo,
+        komfort if komfort else "Brak uwag",
+        potrzeba,
+        seks_ochota,
+        ", ".join(zaznaczone_ochoty) if zaznaczone_ochoty else "Brak",
+        wlasne_pytanie if wlasne_pytanie else "Brak"
+    ]
+    
+    ws.append(row_data)
+    ws.row_dimensions[2].height = 35
+    
+    for col_num in range(1, len(headers) + 1):
+        cell = ws.cell(row=2, column=col_num)
+        cell.alignment = Alignment(vertical="center", wrap_text=True)
+        cell.border = thin_border
+        
+    # Automatyczne dopasowanie szerokości kolumn
+    for col in ws.columns:
+        max_len = max(len(str(cell.value or '')) for cell in col)
+        col_letter = get_column_letter(col[0].column)
+        ws.column_dimensions[col_letter].width = max(max_len + 4, 18)
+        
+    # Zapis do pamięci jako plik binarny do pobrania
     output = BytesIO()
-    with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        df.to_excel(writer, index=False, sheet_name='Wyniki Quizu')
+    wb.save(output)
     excel_data = output.getvalue()
     
-    # Przycisk do pobrania pliku Excel
+    # Przycisk pobierania
     st.download_button(
-        label="📥 Pobierz wyniki jako plik Excel (.xlsx)",
+        label="📥 Pobierz sformatowany plik Excel (.xlsx)",
         data=excel_data,
         file_name=f"quiz_wyniki_{osoba.lower().replace(' ', '_')}.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
