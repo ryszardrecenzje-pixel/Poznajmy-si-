@@ -1,4 +1,6 @@
 import streamlit as st
+import pandas as pd
+from datetime import datetime
 
 st.set_page_config(page_title="Quiz dla Par", page_icon="💖", layout="centered")
 
@@ -58,12 +60,41 @@ wlasne_pytanie = st.text_input(f"{osoba}: Masz jakieś specjalne pytanie, które
 
 st.divider()
 
-# Podsumowanie
-# Podsumowanie
-if st.button("Zapisz / Podsumuj moje odpowiedzi"):
-    st.success(f"Dziękujemy, {osoba}! Twoje odpowiedzi zostały zarejestrowane.")
+# Podsumowanie i Generowanie Excela
+if st.button("Zapisz i przygotuj plik Excel"):
+    st.success(f"Dziękujemy, {osoba}! Twoje odpowiedzi zostały przygotowane do pobrania.")
     
-    with st.expander("Zobacz podsumowanie swoich wyborów"):
+    # Przygotowanie danych do tabeli (Dataframe)
+    dane = {
+        "Data": [datetime.now().strftime("%Y-%m-%d %H:%M")],
+        "Osoba": [osoba],
+        "Poziom Energii": [energia],
+        "Nastrój": [nastroj_slowo],
+        "Stan emocjonalny / Komfort": [komfort if komfort else "Brak uwag"],
+        "Główna potrzeba": [potrzeba],
+        "Ochota na intymność": [seks_ochota],
+        "Wybrane zachcianki": [", ".join(zaznaczone_ochoty)],
+        "Własne pytanie": [wlasne_pytanie if wlasne_pytanie else "Brak"]
+    }
+    
+    df = pd.DataFrame(dane)
+    
+    # Zapis do pliku Excel w pamięci (funkcja do pobrania)
+    from io import BytesIO
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Wyniki Quizu')
+    excel_data = output.getvalue()
+    
+    # Przycisk do pobrania pliku Excel
+    st.download_button(
+        label="📥 Pobierz wyniki jako plik Excel (.xlsx)",
+        data=excel_data,
+        file_name=f"quiz_wyniki_{osoba.lower().replace(' ', '_')}.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+    with st.expander("Zobacz podsumowanie na ekranie"):
         st.write(f"**Poziom energii:** {energia}")
         st.write(f"**Nastrój:** {nastroj_slowo}")
         st.write(f"**Komfort/Emocje:** {komfort if komfort else 'Brak uwag'}")
