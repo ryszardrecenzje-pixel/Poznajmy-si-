@@ -65,17 +65,17 @@ if not st.session_state.regulamin_zaakceptowany:
     st.markdown("Zanim przejdziemy do wspólnego odkrywania nastrojów, potrzeb i granic, zapoznaj się z poniższymi informacjami i wyraź wymagane zgody.")
 
     with st.expander("📜 Regulamin Korzystania z Aplikacji oraz Disclaimer Prawny"):
-        st.markdown("""
-        **1. Charakter aplikacji:** Aplikacja ma charakter wyłącznie edukacyjny, relacyjny i rozrywkowy. Nie stanowi porady medycznej, psychologicznej ani terapii par.
-        **2. Odpowiedzialność:** Autorzy nie ponoszą odpowiedzialności za decyzje podjęte na podstawie wyników check-inu. W sprawach kryzysowych zalecamy kontakt z profesjonalistą.
-        **3. Wymagania:** Korzystanie z aplikacji jest przeznaczone wyłącznie dla osób pełnoletnich.
-        """)
+        st.markdown(
+            "**1. Charakter aplikacji:** Aplikacja ma charakter wyłącznie edukacyjny, relacyjny i rozrywkowy. Nie stanowi porady medycznej, psychologicznej ani terapii par.  \n"
+            "**2. Odpowiedzialność:** Autorzy nie ponoszą odpowiedzialności za decyzje podjęte na podstawie wyników check-inu. W sprawach kryzysowych zalecamy kontakt z profesjonalistą.  \n"
+            "**3. Wymagania:** Korzystanie z aplikacji jest przeznaczone wyłącznie dla osób pełnoletnich."
+        )
 
     with st.expander("🔒 Polityka Prywatności i Informacja o Ciasteczkach (Cookies)"):
-        st.markdown("""
-        **1. Dane osobowe:** Aplikacja działa w trybie sesyjnym. Wprowadzone przez Ciebie dane (imiona, odpowiedzi) są przetwarzane wyłącznie w pamięci przeglądarki (Session State) na potrzeby bieżącego korzystania i generowania pliku Excel. Nie zapisujemy Twoich intymnych odpowiedzi na stałych zewnętrznych serwerach.
-        **2. Pliki Cookies:** Aplikacja może wykorzystywać pliki cookies sesyjne niezbędne do prawidłowego działania interfejsu Streamlit.
-        """)
+        st.markdown(
+            "**1. Dane osobowe:** Aplikacja działa w trybie sesyjnym. Wprowadzone przez Ciebie dane (imiona, odpowiedzi) są przetwarzane wyłącznie w pamięci przeglądarki (Session State) na potrzeby bieżącego korzystania i generowania pliku Excel. Nie zapisujemy Twoich intymnych odpowiedzi na stałych zewnętrznych serwerach.  \n"
+            "**2. Pliki Cookies:** Aplikacja może wykorzystywać pliki cookies sesyjne niezbędne do prawidłowego działania interfejsu Streamlit."
+        )
 
     st.divider()
     st.subheader("Wymagane zgody i oświadczenia:")
