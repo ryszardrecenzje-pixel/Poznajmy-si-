@@ -9,11 +9,63 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 # Konfiguracja strony
 st.set_page_config(page_title="Intymny Check-in dla Par", page_icon="💖", layout="centered")
 
-# Wstrzyknięcie manifestu PWA oraz ikony dla Apple (iOS)
+# Wstrzyknięcie manifestu PWA, ikony Apple oraz przycisku instalacji PWA
 st.markdown(
     """
     <link rel="manifest" href="/static/manifest.json">
-    <link rel="apple-touch-icon" href="https://github.com/ryszardrecenzje-pixel/Poznajmy-si-/blob/main/static/icon.png">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/ryszardrecenzje-pixel/Poznajmy-si-/main/static/icon.png">
+    
+    <script>
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const installBtn = document.getElementById('pwa-install-btn');
+        if (installBtn) {
+            installBtn.style.display = 'block';
+        }
+    });
+
+    function triggerInstall() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('Użytkownik zainstalował aplikację');
+                }
+                deferredPrompt = null;
+            });
+        }
+    }
+    </script>
+
+    <style>
+    .install-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 99999;
+    }
+    #pwa-install-btn {
+        background-color: #E91E63;
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        display: none;
+        font-family: sans-serif;
+    }
+    #pwa-install-btn:hover {
+        background-color: #C2185B;
+    }
+    </style>
+
+    <div class="install-container">
+        <button id="pwa-install-btn" onclick="triggerInstall()">📱 Dodaj skrót aplikacji</button>
+    </div>
     """,
     unsafe_allow_html=True
 )
@@ -293,7 +345,7 @@ else:
             ("🎁 Pikantna niespodzianka", dane_karty["Pikantna niespodzianka"]),
             ("🌙 Motyw przewodni", dane_karty["Motyw przewodni"]),
             ("🌹 Jestem gotowy/wa na...", ", ".join(dane_karty["Gotowość"]) if dane_karty["Gotowość"] else "Czułość i bliskość"),
-            ("💌 Zrób ze mną coś...", dane_karty["Zrób ze mną coś"]),
+            ("💌 Zrób ze mną coś...", dane_karty["Zrób ze mna coś"]),
             ("🔥 Chcę zrobić coś...", dane_karty["Chcę zrobić coś"]),
             ("✨ Komplement", dane_karty["Komplement"]),
             ("💬 Pytanie do partnera", dane_karty["Własne pytanie"])
