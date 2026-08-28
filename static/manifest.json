@@ -1,0 +1,15 @@
+{
+  "name": "Intymny Check-in",
+  "short_name": "Check-in",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF0F5",
+  "theme_color": "#E91E63",
+  "icons": [
+    {
+      "src": "/static/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
