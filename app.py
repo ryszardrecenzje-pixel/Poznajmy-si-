@@ -9,6 +9,15 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 # Konfiguracja strony
 st.set_page_config(page_title="Intymny Check-in dla Par", page_icon="💖", layout="centered")
 
+# Wstrzyknięcie manifestu PWA oraz ikony dla Apple (iOS)
+st.markdown(
+    """
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="apple-touch-icon" href="/static/icon.png">
+    """,
+    unsafe_allow_html=True
+)
+
 # --- MOTYW CSS ---
 st.markdown("""
     <style>
