@@ -9,6 +9,10 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 # Konfiguracja strony
 st.set_page_config(page_title="Intymny Check-in dla Par", page_icon="💖", layout="centered")
 
+# W pliku app.py w miejscu, gdzie chcesz widzieć przycisk:
+if st.button("📲 Zainstaluj aplikację"):
+    st.info("Aby zainstalować aplikację na telefonie lub komputerze, użyj menu przeglądarki (trzy kropki w prawym górnym rogu) i wybierz 'Zainstaluj aplikację' lub 'Dodaj do ekranu głównego'.")
+
 # Wstrzyknięcie manifestu PWA, ikony Apple oraz przycisku instalacji PWA
 st.markdown(
     """
