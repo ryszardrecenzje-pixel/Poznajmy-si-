@@ -13,7 +13,7 @@ st.set_page_config(page_title="Intymny Check-in dla Par", page_icon="💖", layo
 st.markdown(
     """
     <link rel="manifest" href="/static/manifest.json">
-    <link rel="apple-touch-icon" href="/static/icon.png">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/ryszardrecenzje-pixel/Poznajmy-si-/main/static/icon.png">
     """,
     unsafe_allow_html=True
 )
