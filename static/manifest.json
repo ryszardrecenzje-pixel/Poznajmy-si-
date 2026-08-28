@@ -7,7 +7,7 @@
   "theme_color": "#E91E63",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/ryszardrecenzje-pixel/Poznajmy-si-/main/static/icon.png",
+      "src": "https://github.com/ryszardrecenzje-pixel/Poznajmy-si-/blob/main/static/icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
