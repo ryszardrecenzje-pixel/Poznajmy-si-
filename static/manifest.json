@@ -1,5 +1,5 @@
 {
-  "name": "Intymny Check-in",
+  "name": "Intymny Check-in dla Par",
   "short_name": "Check-in",
   "start_url": "/",
   "display": "standalone",
@@ -7,9 +7,9 @@
   "theme_color": "#E91E63",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/ryszardrecenzje-pixel/Poznajmy-si-/main/static/icon.png",
+      "src": "https://raw.githubusercontent.com/ryszardrecenzje-pixel/Poznajmy-si-/main/static/icon.jpg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ]
