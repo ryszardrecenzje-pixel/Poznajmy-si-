@@ -9,7 +9,7 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 # Konfiguracja strony
 st.set_page_config(
     page_title="Intymny Check-in dla Par", 
-    page_icon="static/icon.png", 
+    page_icon="static/icon.jpg", 
     layout="centered"
 )
 
@@ -21,7 +21,7 @@ if st.button("📲 Zainstaluj aplikację"):
 st.markdown(
     """
     <link rel="manifest" href="/static/manifest.json">
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/ryszardrecenzje-pixel/Poznajmy-si-/main/static/icon.png">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/ryszardrecenzje-pixel/Poznajmy-si-/main/static/icon.jpg">
     
     <script>
     let deferredPrompt;
