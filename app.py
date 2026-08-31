@@ -7,11 +7,7 @@ import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
 # Konfiguracja strony
-st.set_page_config(
-    page_title="Intymny Check-in dla Par", 
-    page_icon="static/icon.png", 
-    layout="centered"
-)
+st.set_page_config(page_title="Intymny Check-in dla Par", page_icon="❤️", layout="centered")
 
 # W pliku app.py w miejscu, gdzie chcesz widzieć przycisk:
 if st.button("📲 Zainstaluj aplikację"):
